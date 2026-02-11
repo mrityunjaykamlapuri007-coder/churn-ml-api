@@ -32,18 +32,30 @@ Built an end-to-end ML pipeline that:
 4. Runs inside a Docker container  
 5. Deployed live on cloud  
 
----
+## 🏗️ Architecture Diagram
 
-## 🏗️ System Architecture
+```mermaid
+flowchart LR
 
+A[Customer Dataset] --> B[Data Preprocessing]
+B --> C[Feature Engineering]
+C --> D[Model Training]
+
+D --> E[Random Forest Model]
+E --> F[SHAP Explainability]
+
+F --> G[FastAPI Backend]
+G --> H[Docker Container]
+H --> I[Render Cloud Deployment]
+
+I --> J[REST API Endpoint]
+J --> K[Business Decision System]
+
+K --> L[Churn Probability]
+K --> M[Risk Level]
+K --> N[Recommended Action]
 ```
-Dataset → Data preprocessing → Model training
-        → Feature engineering → SHAP explainability
-        → FastAPI backend → Docker container
-        → Cloud deployment (Render)
-```
 
----
 
 ## 📊 Dataset
 
