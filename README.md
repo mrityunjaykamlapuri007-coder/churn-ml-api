@@ -247,9 +247,18 @@ churn-ml-api/
 
 ---
 
+## 🌐 Live Demo
+
+Dashboard UI:
+https://YOUR-STREAMLIT-LINK.onrender.com
+
+API Docs:
+https://churn-ml-api-6cir.onrender.com/docs
+
+---
+
 ## 🚀 Future Improvements
 
-- Streamlit dashboard for business users  
 - Automated retraining pipeline  
 - Model monitoring & logging  
 - Model versioning  
