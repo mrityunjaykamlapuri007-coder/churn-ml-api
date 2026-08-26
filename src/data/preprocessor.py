@@ -6,8 +6,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from src.config import (
-    TARGET_COL, DROP_COLS, NUMERIC_COERCE_COLS,
-    TARGET_MAP, TEST_SIZE, RANDOM_STATE,
+    DROP_COLS,
+    NUMERIC_COERCE_COLS,
+    RANDOM_STATE,
+    TARGET_COL,
+    TARGET_MAP,
+    TEST_SIZE,
 )
 
 

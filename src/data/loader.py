@@ -1,6 +1,9 @@
-import pandas as pd
 import os
+
+import pandas as pd
+
 from src.config import RAW_DATA_FILE
+
 
 def load_raw_data(path: str | None = None) -> pd.DataFrame:
     """Load the raw Telco Customer Churn CSV file.
@@ -17,7 +20,7 @@ def load_raw_data(path: str | None = None) -> pd.DataFrame:
             f"Data file not found at {load_path}. "
             "Please run 'python scripts/download_data.py' first."
         )
-    
+
     print(f"[ETL] Loading data from {load_path} ...")
     df = pd.read_csv(load_path)
     print(f"[ETL] Loaded {df.shape[0]} rows x {df.shape[1]} columns")

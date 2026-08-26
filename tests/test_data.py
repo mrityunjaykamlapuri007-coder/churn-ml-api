@@ -2,10 +2,10 @@
 tests/test_data.py — Unit tests for data loading & preprocessing
 Run: pytest tests/ -v
 """
-import pytest
-import pandas as pd
-import sys
 import os
+import sys
+
+import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

@@ -2,14 +2,14 @@
 main.py — FastAPI Churn Prediction API
 Loads the saved pipeline and serves predictions via REST endpoints.
 """
+import joblib
+import pandas as pd
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-import joblib
-import pandas as pd
 
-from src.config import PIPELINE_PKL, COLUMNS_PKL
+from src.config import COLUMNS_PKL, PIPELINE_PKL
 from src.logger import get_logger
 
 logger = get_logger(__name__)
@@ -80,14 +80,14 @@ def home():
 @app.post("/predict")
 def predict(data: CustomerData):
     logger.info(f"Prediction requested for customer with tenure {data.tenure} and contract {data.Contract}.")
-    
+
     try:
         input_df = pd.DataFrame([data.model_dump()])
-        
+
         # Apply feature engineering (CRITICAL FIX: prevents training-serving skew)
         from src.features.engineer import add_features
         input_df = add_features(input_df)
-        
+
         # Align columns with the model's expected input
         input_df = input_df.reindex(columns=columns, fill_value=0)
 
@@ -104,7 +104,7 @@ def predict(data: CustomerData):
             action = "No action needed"
 
         logger.info(f"Prediction successful: Probability={prob:.2f}, Risk={risk}")
-        
+
         return {
             "churn_probability": float(prob),
             "risk_level": risk,

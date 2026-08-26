@@ -1,13 +1,13 @@
-import streamlit as st
 import requests
+import streamlit as st
 import yaml  # type: ignore
 
 # Load config
-with open("configs/app.yaml", "r") as f:
+with open("configs/app.yaml") as f:
     config = yaml.safe_load(f)
 
 st.set_page_config(
-    page_title=config["streamlit"]["page_title"], 
+    page_title=config["streamlit"]["page_title"],
     layout=config["streamlit"]["layout"]
 )
 
@@ -75,27 +75,27 @@ if st.button("Predict Churn", use_container_width=True):
 
     try:
         response = requests.post(API_URL, json=payload, timeout=5)
-        
+
         if response.status_code == 200:
             result = response.json()
-            
+
             # Display results in a visually appealing way
             res_col1, res_col2, res_col3 = st.columns(3)
-            
+
             prob = result['churn_probability']
             risk = result['risk_level']
-            
+
             res_col1.metric("Churn Probability", f"{prob * 100:.1f}%")
             res_col2.metric("Risk Level", risk)
             res_col3.metric("Recommended Action", result["recommended_action"])
-            
+
             if risk == "High":
                 st.error("High risk of churn! Immediate action required.")
             elif risk == "Medium":
                 st.warning("Medium risk. Consider retention offers.")
             else:
                 st.success("Low risk. Customer is likely to stay.")
-                
+
         else:
             st.error(f"API Error: {response.status_code}")
     except requests.exceptions.ConnectionError:

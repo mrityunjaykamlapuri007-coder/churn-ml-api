@@ -2,19 +2,22 @@
 Model Training
 Trains LR, Random Forest, XGBoost, and Stacking classifiers.
 """
-import numpy as np
 import pandas as pd
-
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, StackingClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.utils.class_weight import compute_class_weight
 from xgboost import XGBClassifier
 
 from src.config import (
     RANDOM_STATE,
-    RF_PARAM_GRID, RF_SEARCH_ITER, RF_SEARCH_CV, RF_SCORING,
-    XGB_PARAM_GRID, XGB_SEARCH_ITER, XGB_SEARCH_CV, XGB_SCORING,
+    RF_PARAM_GRID,
+    RF_SCORING,
+    RF_SEARCH_CV,
+    RF_SEARCH_ITER,
+    XGB_PARAM_GRID,
+    XGB_SCORING,
+    XGB_SEARCH_CV,
+    XGB_SEARCH_ITER,
 )
 
 

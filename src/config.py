@@ -3,6 +3,7 @@ Central configuration for the Churn ML Pipeline.
 All paths, hyperparameters, and constants are defined here.
 """
 import os
+
 import yaml
 
 # ── Paths ──────────────────────────────────────
@@ -15,7 +16,7 @@ CONFIGS_DIR = os.path.join(BASE_DIR, "configs")
 RAW_DATA_FILE = os.path.join(DATA_DIR, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
 # ── Load Model Config ──────────────────────────
-with open(os.path.join(CONFIGS_DIR, "model.yaml"), "r") as f:
+with open(os.path.join(CONFIGS_DIR, "model.yaml")) as f:
     model_config = yaml.safe_load(f)
 
 # ── Model Artifacts ────────────────────────────

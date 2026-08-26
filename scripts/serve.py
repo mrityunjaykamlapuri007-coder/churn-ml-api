@@ -5,9 +5,9 @@ Usage:
     python scripts/serve.py
     python scripts/serve.py --port 8000 --reload
 """
-import sys
-import os
 import argparse
+import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

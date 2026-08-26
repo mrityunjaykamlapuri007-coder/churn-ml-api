@@ -3,7 +3,9 @@ Feature Engineering
 Creates derived features and applies one-hot encoding.
 """
 import pandas as pd
+
 from src.config import SERVICE_INDICATOR_COLS
+
 
 def add_features(X: pd.DataFrame) -> pd.DataFrame:
     """Engineer new features and one-hot encode categoricals.

@@ -5,19 +5,24 @@ Run evaluation on saved model against test data without retraining.
 Usage:
     python scripts/evaluate.py
 """
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import joblib
-from src.config import PIPELINE_PKL, COLUMNS_PKL
-from src.data import load_raw_data, clean_data, split_data
-from src.features import add_features
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score,
-    f1_score, roc_auc_score, classification_report,
+    accuracy_score,
+    classification_report,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
 )
+
+from src.config import COLUMNS_PKL, PIPELINE_PKL
+from src.data import clean_data, load_raw_data, split_data
+from src.features import add_features
 
 
 def main():

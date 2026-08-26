@@ -3,16 +3,23 @@ Model Evaluation
 Computes metrics and generates comparison plots.
 """
 import os
-import pandas as pd
-import numpy as np
+
 import matplotlib
+import pandas as pd
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns  # type: ignore
-
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
-    roc_auc_score, confusion_matrix, roc_curve, auc, precision_recall_curve,
+    accuracy_score,
+    auc,
+    confusion_matrix,
+    f1_score,
+    precision_recall_curve,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+    roc_curve,
 )
 
 from src.config import PLOTS_DIR
