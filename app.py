@@ -74,7 +74,7 @@ if st.button("Predict Churn", use_container_width=True):
     }
 
     try:
-        response = requests.post(API_URL, json=payload, timeout=5)
+        response = requests.post(API_URL, json=payload, timeout=120)
 
         if response.status_code == 200:
             result = response.json()
@@ -105,5 +105,7 @@ if st.button("Predict Churn", use_container_width=True):
 
         else:
             st.error(f"API Error: {response.status_code}")
+    except requests.exceptions.ReadTimeout:
+        st.error("The API request timed out. The backend server might be waking up from sleep. Please try again in a minute.")
     except requests.exceptions.ConnectionError:
-        st.error("Could not connect to the API. Make sure 'python scripts/serve.py' is running!")
+        st.error("Could not connect to the API. Make sure the backend server is running!")
