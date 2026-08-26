@@ -83,6 +83,12 @@ def predict(data: CustomerData):
     
     try:
         input_df = pd.DataFrame([data.model_dump()])
+        
+        # Apply feature engineering (CRITICAL FIX: prevents training-serving skew)
+        from src.features.engineer import add_features
+        input_df = add_features(input_df)
+        
+        # Align columns with the model's expected input
         input_df = input_df.reindex(columns=columns, fill_value=0)
 
         prob = pipeline.predict_proba(input_df)[0][1]

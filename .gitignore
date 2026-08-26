@@ -35,7 +35,7 @@ htmlcov/
 Thumbs.db
 
 # ── Data (Too large for git) ──
-data/
+/data/
 *.csv
 *.dat
 *.parquet

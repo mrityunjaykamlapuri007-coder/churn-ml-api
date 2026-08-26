@@ -26,6 +26,7 @@ dependencies = [
     "xgboost>=2.0.0",
     "matplotlib>=3.8.0",
     "seaborn>=0.13.0",
+    "PyYAML>=6.0.0",
 ]
 
 [project.optional-dependencies]
@@ -36,6 +37,7 @@ dev = [
     "kagglehub>=0.2.0",
     "jupyter>=1.0.0",
     "nbconvert>=7.0.0",
+    "types-PyYAML>=6.0.0",
 ]
 
 [tool.ruff]
@@ -52,8 +54,14 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v --tb=short"
 
+[project.scripts]
+churn-train = "scripts.train:main"
+churn-serve = "scripts.serve:main"
+churn-evaluate = "scripts.evaluate:main"
+churn-data = "scripts.download_data:main"
+
 [tool.setuptools]
-packages = ["src", "src.data", "src.features", "src.models"]
+packages = ["src", "src.data", "src.features", "src.models", "scripts"]
 
 [tool.pyrefly]
 search_path = ["."]

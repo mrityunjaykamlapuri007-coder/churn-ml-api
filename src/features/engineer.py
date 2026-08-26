@@ -5,7 +5,6 @@ Creates derived features and applies one-hot encoding.
 import pandas as pd
 from src.config import SERVICE_INDICATOR_COLS
 
-
 def add_features(X: pd.DataFrame) -> pd.DataFrame:
     """Engineer new features and one-hot encode categoricals.
 
@@ -41,7 +40,7 @@ def add_features(X: pd.DataFrame) -> pd.DataFrame:
 
     service_cols = [c for c in SERVICE_INDICATOR_COLS if c in X.columns]
     if service_cols:
-        X["total_services_used"] = X[service_cols].sum(axis=1)
+        X["total_services_used"] = X[service_cols].sum(axis=1)  # type: ignore
         print(f"[FEATURES] Added: total_services_used (from {len(service_cols)} services)")
 
     print(f"[FEATURES] Final shape: {X.shape}")

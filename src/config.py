@@ -3,14 +3,20 @@ Central configuration for the Churn ML Pipeline.
 All paths, hyperparameters, and constants are defined here.
 """
 import os
+import yaml
 
 # ── Paths ──────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 MODEL_DIR = os.path.join(BASE_DIR, "model")
 PLOTS_DIR = os.path.join(BASE_DIR, "plots")
+CONFIGS_DIR = os.path.join(BASE_DIR, "configs")
 
 RAW_DATA_FILE = os.path.join(DATA_DIR, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
+
+# ── Load Model Config ──────────────────────────
+with open(os.path.join(CONFIGS_DIR, "model.yaml"), "r") as f:
+    model_config = yaml.safe_load(f)
 
 # ── Model Artifacts ────────────────────────────
 MODEL_PKL = os.path.join(MODEL_DIR, "churn_model.pkl")
@@ -28,28 +34,19 @@ TEST_SIZE = 0.2
 RANDOM_STATE = 42
 
 # ── Hyperparameter Search ─────────────────────
-RF_PARAM_GRID = {
-    "n_estimators": [200, 400, 600],
-    "max_depth": [6, 10, None],
-    "min_samples_split": [2, 5, 10],
-    "min_samples_leaf": [1, 2, 4],
-}
-RF_SEARCH_ITER = 10
-RF_SEARCH_CV = 3
-RF_SCORING = "recall"
+RF_PARAM_GRID = model_config["random_forest"]["param_grid"]
+# YAML parses 'null' as None, but we need to ensure it's handled correctly
+if None in RF_PARAM_GRID.get("max_depth", []):
+    pass # YAML handles this natively
 
-XGB_PARAM_GRID = {
-    "n_estimators": [300, 500, 700],
-    "max_depth": [3, 5, 7, 9],
-    "learning_rate": [0.01, 0.03, 0.05],
-    "subsample": [0.7, 0.85, 1],
-    "colsample_bytree": [0.7, 0.85, 1],
-    "gamma": [0, 0.1, 0.3],
-    "min_child_weight": [1, 3, 5],
-}
-XGB_SEARCH_ITER = 15
-XGB_SEARCH_CV = 3
-XGB_SCORING = "roc_auc"
+RF_SEARCH_ITER = model_config["random_forest"]["search"]["n_iter"]
+RF_SEARCH_CV = model_config["random_forest"]["search"]["cv"]
+RF_SCORING = model_config["random_forest"]["search"]["scoring"]
+
+XGB_PARAM_GRID = model_config["xgboost"]["param_grid"]
+XGB_SEARCH_ITER = model_config["xgboost"]["search"]["n_iter"]
+XGB_SEARCH_CV = model_config["xgboost"]["search"]["cv"]
+XGB_SCORING = model_config["xgboost"]["search"]["scoring"]
 
 # ── Feature Engineering ───────────────────────
 SERVICE_INDICATOR_COLS = [
