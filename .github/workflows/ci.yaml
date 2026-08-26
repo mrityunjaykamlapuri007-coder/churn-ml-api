@@ -31,6 +31,9 @@ jobs:
       - name: Lint with Ruff
         run: uv run ruff check src/ scripts/ tests/ main.py app.py
 
+      - name: Download Dataset (Required for Tests)
+        run: uv run churn-data
+
       - name: Run tests
         run: uv run pytest tests/ -v --tb=short
 
