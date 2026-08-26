@@ -2,6 +2,11 @@
 
 A production-grade machine learning pipeline and REST API for predicting customer churn. Built with a modular, configuration-driven architecture, this project serves as a reference template for scalable ML deployments.
 
+## 🚀 Live Deployments
+
+- **Backend API (Render)**: [https://churn-ml-api-6cir.onrender.com/docs](https://churn-ml-api-6cir.onrender.com/docs)
+- **Frontend App (Streamlit)**: [https://churn-predictor-m.streamlit.app/](https://churn-predictor-m.streamlit.app/)
+
 ## Architecture & Tooling
 
 - **Dependency Management**: `uv` (lightning-fast, deterministic builds via `uv.lock`)
