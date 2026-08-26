@@ -27,6 +27,7 @@ dependencies = [
     "matplotlib>=3.8.0",
     "seaborn>=0.13.0",
     "PyYAML>=6.0.0",
+    "slowapi>=0.1.10",
 ]
 
 [project.optional-dependencies]
@@ -70,3 +71,4 @@ packages = ["src", "src.data", "src.features", "src.models", "scripts"]
 
 [tool.pyrefly]
 search_path = ["."]
+exclude = ["__pyrefly_virtual__"]

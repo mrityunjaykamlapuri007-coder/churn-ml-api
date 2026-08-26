@@ -13,6 +13,8 @@ from sklearn.pipeline import Pipeline
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from datetime import UTC
+
 from src.config import COLUMNS_PKL, MODEL_DIR, MODEL_PKL, PIPELINE_PKL
 from src.data import clean_data, load_raw_data, split_data
 from src.features import add_features
@@ -68,6 +70,39 @@ def main():
     pipeline = Pipeline([("model", best_rf)])
     joblib.dump(pipeline, PIPELINE_PKL)
     logger.info(f"Saved -> {PIPELINE_PKL}")
+
+    # ── Step 7b: Save Model Metadata ──
+    import json
+    from datetime import datetime
+
+    from src.config import METADATA_JSON
+
+    # Extract metrics for the chosen model
+    rf_row = df_results[df_results["Model"] == "Random Forest"]
+    metrics = {}
+    if not rf_row.empty:
+        metrics = {
+            "accuracy": round(float(rf_row["Accuracy"].iloc[0]), 4),
+            "precision": round(float(rf_row["Precision"].iloc[0]), 4),
+            "recall": round(float(rf_row["Recall"].iloc[0]), 4),
+            "f1_score": round(float(rf_row["F1"].iloc[0]), 4),
+            "roc_auc": round(float(rf_row["ROC-AUC"].iloc[0]), 4),
+        }
+
+    metadata = {
+        "version": "1.0.0",
+        "algorithm": "RandomForestClassifier",
+        "trained_at": datetime.now(UTC).isoformat(),
+        "training_samples": len(X_train),
+        "test_samples": len(X_test),
+        "n_features": len(X_train.columns),
+        "metrics": metrics,
+        "hyperparameters": best_rf.get_params() if best_rf else {},
+    }
+
+    with open(METADATA_JSON, "w") as f:
+        json.dump(metadata, f, indent=2, default=str)
+    logger.info(f"Saved -> {METADATA_JSON}")
 
     logger.info("=" * 60)
     logger.info("  TRAINING COMPLETE")

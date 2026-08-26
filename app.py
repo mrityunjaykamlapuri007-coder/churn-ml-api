@@ -14,8 +14,8 @@ st.set_page_config(
 st.title("Customer Churn Prediction System")
 st.write("Enter customer details to predict churn risk.")
 
-# Use the live Render API
-API_URL = "https://churn-ml-api-1.onrender.com/predict"
+# Use the config-driven API URL
+API_URL = config["streamlit"]["api_url"]
 
 # Layout with columns for a cleaner look
 col1, col2, col3 = st.columns(3)
@@ -88,6 +88,13 @@ if st.button("Predict Churn", use_container_width=True):
             res_col1.metric("Churn Probability", f"{prob * 100:.1f}%")
             res_col2.metric("Risk Level", risk)
             res_col3.metric("Recommended Action", result["recommended_action"])
+
+            # Display model metadata
+            if "model_version" in result or "latency_ms" in result:
+                st.caption(
+                    f"Model v{result.get('model_version', 'N/A')} · "
+                    f"Inference: {result.get('latency_ms', 'N/A')}ms"
+                )
 
             if risk == "High":
                 st.error("High risk of churn! Immediate action required.")

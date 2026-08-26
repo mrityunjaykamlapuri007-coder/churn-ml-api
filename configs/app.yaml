@@ -9,6 +9,19 @@ api:
   host: "0.0.0.0"
   port: 8000
 
+cors:
+  allowed_origins:
+    - "https://churn-ml-api-6cir.onrender.com"
+    - "http://localhost:8501"  # Streamlit dev
+    - "http://localhost:3000"  # Frontend dev
+  allow_credentials: true
+  allow_methods: ["GET", "POST"]
+  allow_headers: ["*"]
+
+rate_limit:
+  default: "60/minute"
+  predict: "30/minute"
+
 streamlit:
   page_title: "Customer Churn Predictor"
   layout: "centered"
@@ -28,3 +41,6 @@ risk_thresholds:
 docker:
   base_image: "python:3.11-slim"
   expose_port: 8000
+
+model:
+  metadata_path: "model/metadata.json"

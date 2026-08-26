@@ -19,10 +19,15 @@ RAW_DATA_FILE = os.path.join(DATA_DIR, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
 with open(os.path.join(CONFIGS_DIR, "model.yaml")) as f:
     model_config = yaml.safe_load(f)
 
+# ── Load App Config ────────────────────────────
+with open(os.path.join(CONFIGS_DIR, "app.yaml")) as f:
+    app_config = yaml.safe_load(f)
+
 # ── Model Artifacts ────────────────────────────
 MODEL_PKL = os.path.join(MODEL_DIR, "churn_model.pkl")
 PIPELINE_PKL = os.path.join(MODEL_DIR, "full_pipeline.pkl")
 COLUMNS_PKL = os.path.join(MODEL_DIR, "model_columns.pkl")
+METADATA_JSON = os.path.join(MODEL_DIR, "metadata.json")
 
 # ── Data Config ────────────────────────────────
 TARGET_COL = "Churn"
