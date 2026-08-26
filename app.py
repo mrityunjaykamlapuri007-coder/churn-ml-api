@@ -14,8 +14,8 @@ st.set_page_config(
 st.title("Customer Churn Prediction System")
 st.write("Enter customer details to predict churn risk.")
 
-# Use local API for zero latency
-API_URL = "http://localhost:8000/predict"
+# Use the live Render API
+API_URL = "https://churn-ml-api-1.onrender.com/predict"
 
 # Layout with columns for a cleaner look
 col1, col2, col3 = st.columns(3)
