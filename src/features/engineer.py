@@ -7,7 +7,7 @@ import pandas as pd
 from src.config import SERVICE_INDICATOR_COLS
 
 
-def add_features(X: pd.DataFrame) -> pd.DataFrame:
+def add_features(X: pd.DataFrame, is_train: bool = True) -> pd.DataFrame:
     """Engineer new features and one-hot encode categoricals.
 
     Steps:
@@ -17,6 +17,8 @@ def add_features(X: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         X: Raw feature DataFrame (before encoding).
+        is_train: If True, drops first dummy column to avoid collinearity. 
+                  Must be False during single-row inference to prevent dropping all categories.
 
     Returns:
         Transformed DataFrame with new features and dummies.
@@ -26,13 +28,19 @@ def add_features(X: pd.DataFrame) -> pd.DataFrame:
     # Derived numeric features
     X["avg_monthly_spend"] = X["TotalCharges"] / (X["tenure"] + 1)
     X["is_new_customer"] = (X["tenure"] < 12).astype(int)
-    X["high_monthly_charge"] = (
-        X["MonthlyCharges"] > X["MonthlyCharges"].median()
-    ).astype(int)
+    
+    # Fix median calculation for single-row inference
+    if is_train:
+        median_charge = X["MonthlyCharges"].median()
+    else:
+        median_charge = 70.35 # Approximate median from training data
+        
+    X["high_monthly_charge"] = (X["MonthlyCharges"] > median_charge).astype(int)
     print("[FEATURES] Added: avg_monthly_spend, is_new_customer, high_monthly_charge")
 
     # One-hot encoding
-    X = pd.get_dummies(X, drop_first=True)
+    # CRITICAL: drop_first=True on a 1-row DataFrame drops the column completely!
+    X = pd.get_dummies(X, drop_first=is_train)
     print(f"[FEATURES] One-hot encoded -> {X.shape[1]} columns")
 
     # Post-encoding derived features

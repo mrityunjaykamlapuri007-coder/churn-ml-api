@@ -86,7 +86,7 @@ def predict(data: CustomerData):
 
         # Apply feature engineering (CRITICAL FIX: prevents training-serving skew)
         from src.features.engineer import add_features
-        input_df = add_features(input_df)
+        input_df = add_features(input_df, is_train=False)
 
         # Align columns with the model's expected input
         input_df = input_df.reindex(columns=columns, fill_value=0)
