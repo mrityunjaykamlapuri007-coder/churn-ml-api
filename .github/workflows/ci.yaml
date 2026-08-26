@@ -51,6 +51,6 @@ jobs:
       - name: Verify container starts
         run: |
           docker run -d --name test-api -p 8000:8000 churn-ml-api
-          sleep 5
-          curl -f http://localhost:8000/ || exit 1
+          sleep 10
+          curl -f http://localhost:8000/ || (docker logs test-api && exit 1)
           docker stop test-api
