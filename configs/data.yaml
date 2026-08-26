@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────
+# Data Configuration
+# Controls: data source paths, column definitions, split ratios
+# ─────────────────────────────────────────────────────────────
+
+raw_data:
+  filename: "WA_Fn-UseC_-Telco-Customer-Churn.csv"
+  source_url: "https://www.kaggle.com/datasets/blastchar/telco-customer-churn"
+
+target:
+  column: "Churn"
+  mapping:
+    "Yes": 1
+    "No": 0
+
+drop_columns:
+  - "customerID"
+
+numeric_coerce_columns:
+  - "TotalCharges"
+
+split:
+  test_size: 0.2
+  random_state: 42
+  stratify: true

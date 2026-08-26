@@ -1,39 +1,56 @@
 import streamlit as st
 import requests
+import yaml  # type: ignore
 
-st.set_page_config(page_title="Customer Churn Predictor", layout="centered")
+# Load config
+with open("configs/app.yaml", "r") as f:
+    config = yaml.safe_load(f)
 
-st.title("📉 Customer Churn Prediction System")
+st.set_page_config(
+    page_title=config["streamlit"]["page_title"], 
+    layout=config["streamlit"]["layout"]
+)
+
+st.title("Customer Churn Prediction System")
 st.write("Enter customer details to predict churn risk.")
 
-API_URL = "https://churn-ml-api-6cir.onrender.com/predict"
+# Use local API for zero latency
+API_URL = "http://localhost:8000/predict"
 
-# Inputs
-gender = st.selectbox("Gender", ["Male", "Female"])
-SeniorCitizen = st.selectbox("Senior Citizen", [0, 1])
-Partner = st.selectbox("Partner", ["Yes", "No"])
-Dependents = st.selectbox("Dependents", ["Yes", "No"])
-tenure = st.slider("Tenure (months)", 0, 72, 12)
-PhoneService = st.selectbox("Phone Service", ["Yes", "No"])
-MultipleLines = st.selectbox("Multiple Lines", ["Yes", "No"])
-InternetService = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
-OnlineSecurity = st.selectbox("Online Security", ["Yes", "No"])
-OnlineBackup = st.selectbox("Online Backup", ["Yes", "No"])
-DeviceProtection = st.selectbox("Device Protection", ["Yes", "No"])
-TechSupport = st.selectbox("Tech Support", ["Yes", "No"])
-StreamingTV = st.selectbox("Streaming TV", ["Yes", "No"])
-StreamingMovies = st.selectbox("Streaming Movies", ["Yes", "No"])
-Contract = st.selectbox("Contract", ["Month-to-month", "One year", "Two year"])
-PaperlessBilling = st.selectbox("Paperless Billing", ["Yes", "No"])
-PaymentMethod = st.selectbox(
-    "Payment Method",
-    ["Electronic check", "Mailed check", "Bank transfer", "Credit card"]
-)
-MonthlyCharges = st.number_input("Monthly Charges", 0.0, 200.0, 70.0)
-TotalCharges = st.number_input("Total Charges", 0.0, 10000.0, 1000.0)
+# Layout with columns for a cleaner look
+col1, col2, col3 = st.columns(3)
 
-if st.button("Predict Churn"):
+with col1:
+    gender = st.selectbox("Gender", ["Male", "Female"])
+    SeniorCitizen = st.selectbox("Senior Citizen", [0, 1])
+    Partner = st.selectbox("Partner", ["Yes", "No"])
+    Dependents = st.selectbox("Dependents", ["Yes", "No"])
+    tenure = st.slider("Tenure (months)", 0, 72, 12)
+    PhoneService = st.selectbox("Phone Service", ["Yes", "No"])
+    MultipleLines = st.selectbox("Multiple Lines", ["Yes", "No"])
 
+with col2:
+    InternetService = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
+    OnlineSecurity = st.selectbox("Online Security", ["Yes", "No"])
+    OnlineBackup = st.selectbox("Online Backup", ["Yes", "No"])
+    DeviceProtection = st.selectbox("Device Protection", ["Yes", "No"])
+    TechSupport = st.selectbox("Tech Support", ["Yes", "No"])
+    StreamingTV = st.selectbox("Streaming TV", ["Yes", "No"])
+    StreamingMovies = st.selectbox("Streaming Movies", ["Yes", "No"])
+
+with col3:
+    Contract = st.selectbox("Contract", ["Month-to-month", "One year", "Two year"])
+    PaperlessBilling = st.selectbox("Paperless Billing", ["Yes", "No"])
+    PaymentMethod = st.selectbox(
+        "Payment Method",
+        ["Electronic check", "Mailed check", "Bank transfer", "Credit card"]
+    )
+    MonthlyCharges = st.number_input("Monthly Charges", 0.0, 200.0, 70.0)
+    TotalCharges = st.number_input("Total Charges", 0.0, 10000.0, 1000.0)
+
+st.markdown("---")
+
+if st.button("Predict Churn", use_container_width=True):
     payload = {
         "gender": gender,
         "SeniorCitizen": SeniorCitizen,
@@ -56,16 +73,30 @@ if st.button("Predict Churn"):
         "TotalCharges": TotalCharges
     }
 
-    response = requests.post(API_URL, json=payload)
-
-    if response.status_code == 200:
-        result = response.json()
-
-        st.success("Prediction Complete!")
-
-        st.metric("Churn Probability", f"{result['churn_probability']:.2f}")
-        st.write("Risk Level:", result["risk_level"])
-        st.write("Recommended Action:", result["recommended_action"])
-
-    else:
-        st.error("Error connecting to API.")
+    try:
+        response = requests.post(API_URL, json=payload, timeout=5)
+        
+        if response.status_code == 200:
+            result = response.json()
+            
+            # Display results in a visually appealing way
+            res_col1, res_col2, res_col3 = st.columns(3)
+            
+            prob = result['churn_probability']
+            risk = result['risk_level']
+            
+            res_col1.metric("Churn Probability", f"{prob * 100:.1f}%")
+            res_col2.metric("Risk Level", risk)
+            res_col3.metric("Recommended Action", result["recommended_action"])
+            
+            if risk == "High":
+                st.error("High risk of churn! Immediate action required.")
+            elif risk == "Medium":
+                st.warning("Medium risk. Consider retention offers.")
+            else:
+                st.success("Low risk. Customer is likely to stay.")
+                
+        else:
+            st.error(f"API Error: {response.status_code}")
+    except requests.exceptions.ConnectionError:
+        st.error("Could not connect to the API. Make sure 'python scripts/serve.py' is running!")

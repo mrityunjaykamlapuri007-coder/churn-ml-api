@@ -1,0 +1,30 @@
+#!/bin/sh
+# .githooks/pre-commit
+# Runs linting and basic checks before each commit.
+# To enable: git config core.hooksPath .githooks
+
+echo "🔍 Running pre-commit checks..."
+
+# Lint with ruff (if installed)
+if command -v ruff &> /dev/null; then
+    echo "  → Ruff lint..."
+    ruff check src/ scripts/ main.py app.py
+    if [ $? -ne 0 ]; then
+        echo "❌ Linting failed. Fix errors before committing."
+        exit 1
+    fi
+fi
+
+# Check for large files
+MAX_SIZE=5000000  # 5MB
+for file in $(git diff --cached --name-only); do
+    if [ -f "$file" ]; then
+        size=$(wc -c < "$file")
+        if [ "$size" -gt "$MAX_SIZE" ]; then
+            echo "❌ File $file is too large (${size} bytes). Max: ${MAX_SIZE}"
+            exit 1
+        fi
+    fi
+done
+
+echo "✅ Pre-commit checks passed!"

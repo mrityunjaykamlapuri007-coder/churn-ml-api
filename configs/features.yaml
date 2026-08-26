@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────
+# Feature Engineering Configuration
+# Controls: which features to create, service indicator columns
+# ─────────────────────────────────────────────────────────────
+
+derived_features:
+  avg_monthly_spend:
+    formula: "TotalCharges / (tenure + 1)"
+    description: "Average spend per month of tenure"
+
+  is_new_customer:
+    formula: "tenure < 12"
+    description: "Flag for customers with less than 12 months"
+
+  high_monthly_charge:
+    formula: "MonthlyCharges > median(MonthlyCharges)"
+    description: "Flag for above-median monthly charges"
+
+  long_term_contract:
+    formula: "Contract_One year + Contract_Two year"
+    description: "Combined long-term contract indicator (post-encoding)"
+
+  total_services_used:
+    description: "Count of services subscribed"
+
+service_indicator_columns:
+  - "PhoneService_Yes"
+  - "MultipleLines_Yes"
+  - "OnlineSecurity_Yes"
+  - "OnlineBackup_Yes"
+  - "DeviceProtection_Yes"
+  - "TechSupport_Yes"
+  - "StreamingTV_Yes"
+  - "StreamingMovies_Yes"
+
+encoding:
+  method: "one_hot"
+  drop_first: true
